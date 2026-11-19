@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Malam di Lembayung</title>
-<meta name="description" content="Game werewolf untuk satu kelas: desa 3D gaya 32-bit di proyektor, siswa bergabung lewat HP dengan PIN.">
+<meta name="description" content="Game werewolf untuk satu kelas: desa 3D gaya 32-bit di proyektor, pemain bergabung lewat HP dengan PIN.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Pixelify+Sans:wght@400;600;700&display=swap">
@@ -234,7 +234,7 @@ table.mod th{color:var(--dim);font-weight:400;font-size:12px;letter-spacing:.12e
   <div class="panel">
     <div class="eyebrow">Lobi online</div>
     <h2>Gabung lewat HP</h2>
-    <p>Siswa memindai kode QR atau membuka alamat di bawah lewat HP, lalu memasukkan PIN dan nama panggilan. Tidak perlu akun.</p>
+    <p>Pemain memindai kode QR atau membuka alamat di bawah lewat HP, lalu memasukkan PIN dan nama panggilan. Tidak perlu akun.</p>
     <div class="pinbox"><span class="eyebrow">PIN permainan</span><div class="pin" id="lobbyPin">------</div><span class="netnote" id="lobbyNet"></span><div id="qrbox"></div><span class="netnote">Alamat: <b id="lobbyUrl" style="color:var(--moon)"></b></span></div>
     <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><span class="eyebrow" id="lobbyCount">0 pemain bergabung</span><span class="netnote">Klik nama untuk mengeluarkan pemain.</span></div>
     <div id="lobbyList"></div>
@@ -247,7 +247,7 @@ table.mod th{color:var(--dim);font-weight:400;font-size:12px;letter-spacing:.12e
   <div class="panel">
     <div class="eyebrow">Persiapan</div>
     <h2>Siapa saja warga desa?</h2>
-    <p>Tulis nama siswa satu per baris. Kalau dikosongkan, pemain diberi nomor sesuai jumlah di bawah.</p>
+    <p>Tulis nama pemain satu per baris. Kalau dikosongkan, pemain diberi nomor sesuai jumlah di bawah.</p>
     <div class="grid2">
       <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
         <p class="netnote" id="onlineInfo" hidden></p>
@@ -284,7 +284,7 @@ table.mod th{color:var(--dim);font-weight:400;font-size:12px;letter-spacing:.12e
   <div class="panel">
     <div class="eyebrow">Pembagian kartu</div>
     <h2>Ambil kartumu diam-diam</h2>
-    <p>Panggil siswa satu per satu ke depan. Ketuk namanya, buka kartu, lalu tutup lagi sebelum siswa berikutnya datang. Untuk kelas besar, guru bisa membuka Lembar moderator dan membagikan peran lewat kertas.</p>
+    <p>Panggil pemain satu per satu ke depan. Ketuk namanya, buka kartu, lalu tutup lagi sebelum pemain berikutnya datang. Untuk kelas besar, moderator bisa membuka Lembar moderator dan membagikan peran lewat kertas.</p>
     <div id="dealGrid"></div>
     <div class="row-end">
       <button class="btn" id="dealMod">Lembar moderator</button>
@@ -312,7 +312,7 @@ table.mod th{color:var(--dim);font-weight:400;font-size:12px;letter-spacing:.12e
   <div class="ph-head"><div class="ph-title">Malam di Lembayung</div><div class="ph-badge" id="phPhase">Gabung</div></div>
   <div class="ph-card" id="phJoin">
     <h3>Masuk permainan</h3>
-    <label class="f" for="phPin">PIN dari layar guru<input id="phPin" inputmode="numeric" maxlength="6" autocomplete="off"></label>
+    <label class="f" for="phPin">PIN dari layar moderator<input id="phPin" inputmode="numeric" maxlength="6" autocomplete="off"></label>
     <label class="f" for="phNick">Nama panggilan<input id="phNick" maxlength="20" autocomplete="off"></label>
     <div class="warn" id="phWarn"></div>
     <button class="btn primary" id="phGo">Gabung</button>
@@ -354,15 +354,15 @@ table.mod th{color:var(--dim);font-weight:400;font-size:12px;letter-spacing:.12e
 
 <div class="modal" id="mHelp" hidden>
   <div class="panel">
-    <div class="eyebrow">Untuk guru</div>
+    <div class="eyebrow">Untuk moderator</div>
     <h2>Cara bermain</h2>
     <ol class="rules">
-      <li>Tampilkan layar ini lewat proyektor. Guru menjadi <b>moderator</b> dan memegang mouse.</li>
-      <li>Masukkan nama siswa, lalu bagikan peran. Tiap siswa melihat kartunya sendiri tanpa diketahui teman.</li>
-      <li><b>Malam:</b> semua siswa menunduk dan menutup mata. Narator memanggil Serigala, Tabib, lalu Peramal. Pemain yang dipanggil membuka mata dan menunjuk diam-diam; guru mengklik pilihannya di layar.</li>
-      <li><b>Siang:</b> semua bangun. Narator mengumumkan korban. Kelas berdebat sesuai waktu, lalu voting angkat tangan. Guru memasukkan jumlah suara.</li>
+      <li>Tampilkan layar ini lewat proyektor. <b>Moderator</b> memegang mouse dan memandu permainan.</li>
+      <li>Masukkan nama pemain, lalu bagikan peran. Tiap pemain melihat kartunya sendiri tanpa diketahui teman.</li>
+      <li><b>Malam:</b> semua pemain menunduk dan menutup mata. Narator memanggil Serigala, Tabib, lalu Peramal. Pemain yang dipanggil membuka mata dan menunjuk diam-diam; moderator mengklik pilihannya di layar.</li>
+      <li><b>Siang:</b> semua bangun. Narator mengumumkan korban. Kelas berdebat sesuai waktu, lalu voting angkat tangan. Moderator memasukkan jumlah suara.</li>
       <li><b>Warga menang</b> jika semua serigala tersingkir. <b>Serigala menang</b> jika jumlah mereka sama dengan sisa warga.</li>
-      <li><b>Mode online:</b> pilih "Main online dengan PIN". Siswa memindai QR atau membuka alamat /join di HP, memasukkan PIN, lalu melihat peran dan memilih langsung dari HP. Guru tetap menekan tombol konfirmasi di layar.</li>
+      <li><b>Mode online:</b> pilih "Main online dengan PIN". Pemain memindai QR atau membuka alamat /join di HP, memasukkan PIN, lalu melihat peran dan memilih langsung dari HP. Moderator tetap menekan tombol konfirmasi di layar.</li>
       <li><b>Peran tambahan:</b> Serigala Alfa, Penyihir, Tetua, Mak Comblang, dan Badut. Jumlahnya diatur di layar persiapan.</li>
       <li>Pemain yang sudah mati tetap diam sampai permainan berakhir.</li>
     </ol>
@@ -552,7 +552,7 @@ async function hostConnect(){
   c.subscribe(NET.base+'/p',{qos:1});
   c.on('message',(t,b)=>{let m;try{m=JSON.parse(b.toString())}catch(e){return}hostMsg(m)});
   c.on('offline',()=>{$('#lobbyNet').textContent='Koneksi terputus. Menyambung ulang…'});
-  c.on('connect',()=>{$('#lobbyNet').textContent='Tersambung. Siswa bisa bergabung sekarang.';pushState()});
+  c.on('connect',()=>{$('#lobbyNet').textContent='Tersambung. Pemain bisa bergabung sekarang.';pushState()});
   return true}
 async function hostMsg(m){if(!m||typeof m.id!=='string'||m.id.length>40||NET.ban.has(m.id))return;
   if(m.t==='join'){let p=NET.players.get(m.id);
@@ -990,7 +990,7 @@ function getEntries(){const out=[],used=new Set();
   if(!out.length){const n=Math.max(5,Math.min(40,+$('#count').value||20));for(let i=0;i<n;i++)add(`Pemain ${i+1}`,null)}
   return out.slice(0,40)}
 function renderRoles(){const box=$('#roleRows');box.innerHTML='';
-  const on=NET.on?onlinePeers().length:0;$('#onlineInfo').hidden=!NET.on;$('#onlineInfo').textContent=`${on} pemain online dari lobi (PIN ${NET.pin}). Tambahkan di bawah hanya siswa yang tidak memakai HP.`;
+  const on=NET.on?onlinePeers().length:0;$('#onlineInfo').hidden=!NET.on;$('#onlineInfo').textContent=`${on} pemain online dari lobi (PIN ${NET.pin}). Tambahkan di bawah hanya pemain yang tidak memakai HP.`;
   $('#namesLbl').textContent=NET.on?'Pemain tanpa HP (opsional)':'Nama pemain';
   ROLE_ORDER.forEach(k=>{const r=ROLES[k];const row=document.createElement('div');row.className='rrow';const cv=document.createElement('canvas');drawSprite(cv,k);
     const info=document.createElement('div');info.innerHTML=`<b style="color:${r.color}">${r.name}</b><small>${esc(r.desc)}</small>`;
@@ -1002,7 +1002,8 @@ function validate(){const n=getEntries().length,c=G.config.counts,sp=ROLE_ORDER.
   $('#setupWarn').textContent=msg;$('#goDeal').disabled=!!msg;return!msg}
 ['#names','#count'].forEach(s=>$(s).addEventListener('input',validate));
 $('#autoRoles').onclick=()=>{G.config.counts=autoCounts(getEntries().length);renderRoles();blip()};
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function rndInt(n){if(window.crypto&&crypto.getRandomValues){const lim=Math.floor(4294967296/n)*n,u=new Uint32Array(1);do crypto.getRandomValues(u);while(u[0]>=lim);return u[0]%n}return Math.floor(Math.random()*n)}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=rndInt(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
 function deal(entries){
   const c=G.config.counts,bag=[];ROLE_ORDER.forEach(k=>{for(let i=0;i<(c[k]||0);i++)bag.push(k)});while(bag.length<entries.length)bag.push('warga');bag.length=entries.length;shuffle(bag);
   G.players=entries.map((e,i)=>({id:i,name:e.name,uid:e.uid||null,role:bag[i],alive:true,votes:0,hurt:false}));
@@ -1034,7 +1035,7 @@ function renderLobby(){if(!NET.on)return;const ps=onlinePeers();const list=$('#l
     b.onclick=()=>{NET.ban.add(p.id);blip();renderLobby()};list.appendChild(b)});
   $('#lobbyCount').textContent=`${ps.length} pemain bergabung`;
   if(ps.length>NET.lastCount)tone('triangle',880,1320,.15,.08);NET.lastCount=ps.length;
-  if(!$('#sSetup').hidden){$('#onlineInfo').textContent=`${ps.length} pemain online dari lobi (PIN ${NET.pin}). Tambahkan di bawah hanya siswa yang tidak memakai HP.`;validate()}}
+  if(!$('#sSetup').hidden){$('#onlineInfo').textContent=`${ps.length} pemain online dari lobi (PIN ${NET.pin}). Tambahkan di bawah hanya pemain yang tidak memakai HP.`;validate()}}
 async function openLobby(){au();blip();show('#sLobby');
   if(!NET.on){$('#lobbyNet').textContent='Menghubungkan ke server online…';$('#lobbyPin').textContent='······';
     const ok=await hostConnect();
@@ -1043,7 +1044,7 @@ async function openLobby(){au();blip();show('#sLobby');
     loadLib(QR_URL,'QRCode').then(Q=>{$('#qrbox').innerHTML='';new Q($('#qrbox'),{text:j.url,width:180,height:180,correctLevel:Q.CorrectLevel.M})}).catch(()=>{});
     setInterval(()=>{if(!$('#sLobby').hidden||!$('#sSetup').hidden)renderLobby()},5000)}
   G.netPhase='lobby';G.win=null;G.step=null;G.timer=null;G.narrText='';G.gid=null;
-  $('#lobbyPin').textContent=NET.pin;$('#lobbyNet').textContent='Tersambung. Siswa bisa bergabung sekarang.';pushState();renderLobby()}
+  $('#lobbyPin').textContent=NET.pin;$('#lobbyNet').textContent='Tersambung. Pemain bisa bergabung sekarang.';pushState();renderLobby()}
 
 /* ================= PHONE (player view) ================= */
 const PH={id:null,keys:null,pub:null,hkey:null,hpk:'',st:null,role:null,roleRaw:null,sel:null,show:false,joined:false,pin:null,nick:'',base:'',lastKey:null,seenSprite:null,client:null,ping:0};
@@ -1063,7 +1064,7 @@ function phoneMode(){
 }
 async function phConnect(pin,nick){
   const idx=+pin[0]-1;
-  if(!/^\d{6}$/.test(pin)||!(idx>=0&&idx<BROKERS.length)){phWarn('PIN harus 6 angka, sesuai yang tampil di layar guru.');return}
+  if(!/^\d{6}$/.test(pin)||!(idx>=0&&idx<BROKERS.length)){phWarn('PIN harus 6 angka, sesuai yang tampil di layar moderator.');return}
   if(!window.crypto||!crypto.subtle){phWarn('Browser ini tidak mendukung enkripsi. Buka lewat alamat https.');return}
   phWarn('Menyambung…');$('#phGo').disabled=true;
   try{
@@ -1080,7 +1081,7 @@ async function phConnect(pin,nick){
     c.on('offline',()=>{if(PH.client===c)phWarn('Koneksi terputus. Menyambung ulang…')});
     c.on('connect',()=>{if(PH.client===c){phWarn('');phPing()}});
     phPing();clearInterval(PH.ping);PH.ping=setInterval(phPing,10000);
-    setTimeout(()=>{if(PH.client===c&&!PH.st)phWarn('Permainan dengan PIN ini tidak ditemukan. Periksa lagi PIN di layar guru.')},7000);
+    setTimeout(()=>{if(PH.client===c&&!PH.st)phWarn('Permainan dengan PIN ini tidak ditemukan. Periksa lagi PIN di layar moderator.')},7000);
   }catch(e){phWarn('Tidak bisa terhubung ke server. Cek internet lalu coba lagi.')}
   $('#phGo').disabled=false}
 function phPing(){if(PH.client&&PH.pub)PH.client.publish(PH.base+'/p',JSON.stringify({t:'join',id:PH.id,nick:PH.nick,pk:PH.pub}),{qos:1})}
@@ -1107,7 +1108,7 @@ function renderPhone(){
   $('#phPhase').textContent=(PHASE_N[st.phase]||'')+((st.phase==='night'||st.phase==='day')&&st.day?' '+st.day:'');
   ['#phRole','#phDead','#phSleep','#phAct','#phTimerBox','#phNarrBox','#phSeen','#phEnd'].forEach(s=>$(s).hidden=true);
   $('#phWait').hidden=inGame;
-  $('#phWaitT').textContent=st.phase==='lobby'?`Kamu masuk sebagai ${PH.nick}. Cari namamu di layar, lalu tunggu guru memulai.`:`Permainan sedang berjalan tanpa namamu. Kamu ikut di ronde berikutnya, ${PH.nick}.`;
+  $('#phWaitT').textContent=st.phase==='lobby'?`Kamu masuk sebagai ${PH.nick}. Cari namamu di layar, lalu tunggu moderator memulai.`:`Permainan sedang berjalan tanpa namamu. Kamu ikut di ronde berikutnya, ${PH.nick}.`;
   $('#phone').classList.toggle('dark',inGame&&st.phase==='night');
   if(!inGame)return;
   const r=PH.role,R=ROLES[r.role]||ROLES.warga,me=(st.players||[])[r.pid]||{a:true},alive=me.a!==false;
