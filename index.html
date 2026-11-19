@@ -168,6 +168,43 @@ table.mod th{color:var(--dim);font-weight:400;font-size:12px;letter-spacing:.12e
 .ph-timer{font:700 52px var(--ui);text-align:center;font-variant-numeric:tabular-nums}
 .ph-dead{background:#2a0d14;border-color:var(--blood)}
 .seen-row{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.title-pick{display:flex;flex-direction:column;gap:14px;align-items:center}
+.role-pick{display:flex;flex-direction:column;gap:6px;text-align:left;width:min(300px,100%);padding:18px 20px;border:2px solid var(--moon);background:var(--panel);color:var(--moon);border-radius:6px;box-shadow:4px 4px 0 rgba(0,0,0,.6);transition:transform .08s,border-color .15s}
+.role-pick:hover{border-color:var(--lantern);transform:translate(-1px,-1px)}
+.role-pick b{font:400 32px var(--display);color:var(--lantern)}
+.role-pick span{font-size:14px;color:var(--dim);line-height:1.4}
+ol.steps{margin:0 0 6px;padding-left:1.4em;font-size:clamp(16px,1.8vw,20px);line-height:1.6;color:var(--moon)}
+#modHint{margin-top:8px;font-size:13px;max-width:36em;background:rgba(255,179,71,.14);border:1px solid rgba(255,179,71,.45);color:var(--lantern);padding:5px 9px;border-radius:3px;line-height:1.4}
+#modHint:empty{display:none}
+.ph-netbar{background:var(--blood);color:#fff;padding:6px 10px;border-radius:3px;font-size:14px;text-align:center}
+.ph-stage{border:2px solid var(--line);border-radius:6px;overflow:hidden;background:#000;transition:opacity .8s}
+#phScene{display:block;width:100%;aspect-ratio:16/9;image-rendering:pixelated}
+.ph-narr{margin:0;padding:12px 14px;background:rgba(10,8,25,.92);font-size:17px;line-height:1.45;min-height:3.2em;border-top:2px solid var(--line)}
+.ph-status{border-left:6px solid var(--sc,var(--lantern));background:var(--panel);border-radius:4px;padding:12px 14px}
+.ph-st-big{font:400 30px var(--display);color:var(--sc,var(--lantern));line-height:1.1}
+.ph-st-small{font-size:15px;color:var(--moon);margin-top:4px;line-height:1.4}
+.ph-rolecard{margin:0 auto;width:min(300px,82vw)}
+.ph-rolecard .face.front canvas{width:96px;height:96px}
+.ph-rolecard .face .rn{font-size:38px}
+.ph-rolecard .face .ds{font-size:14px}
+.ph-rolecard .face.back .moonsig{width:90px;height:90px}
+#phTimerBox.urgent .ph-timer{color:var(--blood);animation:pulse 1s infinite}
+#phTargets button.skip{grid-column:1/-1;border-style:dashed}
+#phone.dark .ph-stage{opacity:.4}
+#phone.dark .ph-narr{display:none}
+.ph-ov{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px;background:radial-gradient(circle,rgba(20,14,50,.88),rgba(5,3,15,.97))}
+.ph-ov canvas{width:120px;height:120px;image-rendering:pixelated;animation:pop .6s cubic-bezier(.3,1.6,.5,1) both;filter:drop-shadow(0 0 18px var(--oc))}
+.ph-ov .ov-t{font:400 52px var(--display);color:var(--oc);line-height:1;text-shadow:3px 3px 0 #000;animation:pop .6s .1s cubic-bezier(.3,1.6,.5,1) both}
+.ph-ov .ov-s{font-size:18px;max-width:22em;line-height:1.4;animation:rise .6s .25s both}
+.ph-ov .ov-h{font-size:12px;color:var(--dim);margin-top:10px}
+.ph-ov.turn{animation:flashbg .45s 6 alternate}
+.ph-ov.turn .ov-t{font-size:64px;color:#fff}
+.ph-ov.death{background:radial-gradient(circle,rgba(110,12,24,.92),rgba(5,3,15,.97))}
+@keyframes flashbg{from{background:var(--oc)}to{background:rgba(5,3,15,.97)}}
+#phTap{position:fixed;inset:0;z-index:45;background:rgba(5,3,15,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px;cursor:pointer}
+#phTap b{font:400 34px var(--display)}
+#phTap span{color:var(--dim)}
+#phTap .moonsig{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff5e0,#e0483b 70%);box-shadow:0 0 50px rgba(224,72,59,.6);animation:pulse 3s infinite}
 @media (max-width:640px){#narr{flex-direction:column;align-items:stretch;padding:16px}#pick{bottom:calc(env(safe-area-inset-bottom,0px) + 190px)}.hud-right .ib{padding:6px 7px;font-size:12px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -181,7 +218,7 @@ table.mod th{color:var(--dim);font-weight:400;font-size:12px;letter-spacing:.12e
 <div id="labels"></div>
 
 <header id="hud" hidden>
-  <div><div id="phase">Senja</div><div id="alive"></div></div>
+  <div><div id="phase">Senja</div><div id="alive"></div><div id="modHint"></div></div>
   <div class="hud-right">
     <button class="ib" id="bSound" aria-pressed="true">Suara</button>
     <button class="ib" id="bVoice" aria-pressed="false">Suara narator</button>
@@ -221,31 +258,32 @@ table.mod th{color:var(--dim);font-weight:400;font-size:12px;letter-spacing:.12e
   <h1>Malam di Lembayung</h1>
   <div class="tag">Bulan merah terbit di atas desa. Beberapa tetanggamu bukan manusia lagi. Temukan mereka sebelum desa habis.</div>
   <div class="meta" id="titleWait" hidden>Menyambung…</div>
-  <div class="row" id="titleRow">
-    <button class="btn primary" id="goOnline" hidden>Main online dengan PIN</button>
-    <button class="btn" id="goSetup">Main di satu layar</button>
-    <button class="btn" id="goHelp">Cara bermain</button>
-    <button class="btn" id="goPlayer">Saya pemain</button>
+  <div id="titleRow" class="title-pick">
+    <div class="row">
+      <button class="role-pick" id="goOnline" hidden><b>Saya Moderator</b><span>Buka di laptop yang tersambung ke proyektor. Pemain bergabung lewat HP dengan PIN.</span></button>
+      <button class="role-pick" id="goPlayer"><b>Saya Pemain</b><span>Buka di HP, lalu masukkan PIN dari layar moderator.</span></button>
+    </div>
+    <div class="row"><button class="btn sm" id="goSetup">Main tanpa HP (satu layar)</button><button class="btn sm" id="goHelp">Cara bermain</button></div>
   </div>
 </div>
 
 <!-- Online lobby -->
 <div class="screen dim" id="sLobby" hidden>
   <div class="panel">
-    <div class="eyebrow">Lobi online</div>
+    <div class="eyebrow">Langkah 1 dari 3 · Lobi</div>
     <h2>Gabung lewat HP</h2>
-    <p>Pemain memindai kode QR atau membuka alamat di bawah lewat HP, lalu memasukkan PIN dan nama panggilan. Tidak perlu akun.</p>
+    <ol class="steps"><li>Pindai kode QR dengan kamera HP, atau ketik alamat di bawah.</li><li>Masukkan PIN.</li><li>Tulis nama panggilan, lalu tekan Gabung.</li></ol>
     <div class="pinbox"><span class="eyebrow">PIN permainan</span><div class="pin" id="lobbyPin">------</div><span class="netnote" id="lobbyNet"></span><div id="qrbox"></div><span class="netnote">Alamat: <b id="lobbyUrl" style="color:var(--moon)"></b></span></div>
     <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><span class="eyebrow" id="lobbyCount">0 pemain bergabung</span><span class="netnote">Klik nama untuk mengeluarkan pemain.</span></div>
     <div id="lobbyList"></div>
-    <div class="row-end"><button class="btn" id="lobbyBack">Kembali</button><button class="btn primary" id="lobbyNext">Lanjut ke pengaturan peran</button></div>
+    <div class="row-end"><button class="btn" id="lobbyBack">Kembali ke menu</button><button class="btn primary" id="lobbyNext">Lanjut ke pengaturan peran</button></div>
   </div>
 </div>
 
 <!-- Setup -->
 <div class="screen dim" id="sSetup" hidden>
   <div class="panel">
-    <div class="eyebrow">Persiapan</div>
+    <div class="eyebrow">Langkah 2 dari 3 · Atur peran</div>
     <h2>Siapa saja warga desa?</h2>
     <p>Tulis nama pemain satu per baris. Kalau dikosongkan, pemain diberi nomor sesuai jumlah di bawah.</p>
     <div class="grid2">
@@ -282,9 +320,9 @@ table.mod th{color:var(--dim);font-weight:400;font-size:12px;letter-spacing:.12e
 <!-- Deal -->
 <div class="screen dim" id="sDeal" hidden>
   <div class="panel">
-    <div class="eyebrow">Pembagian kartu</div>
-    <h2>Ambil kartumu diam-diam</h2>
-    <p>Panggil pemain satu per satu ke depan. Ketuk namanya, buka kartu, lalu tutup lagi sebelum pemain berikutnya datang. Untuk kelas besar, moderator bisa membuka Lembar moderator dan membagikan peran lewat kertas.</p>
+    <div class="eyebrow">Langkah 3 dari 3 · Bagikan kartu</div>
+    <h2>Kartu sudah dibagikan</h2>
+    <p>Pemain yang memakai HP sudah menerima kartunya di HP. Untuk pemain tanpa HP, panggil satu per satu ke depan, ketuk namanya, buka kartu, lalu tutup lagi. Kalau semua sudah tahu perannya, tekan Mulai malam pertama.</p>
     <div id="dealGrid"></div>
     <div class="row-end">
       <button class="btn" id="dealMod">Lembar moderator</button>
@@ -309,25 +347,34 @@ table.mod th{color:var(--dim);font-weight:400;font-size:12px;letter-spacing:.12e
 
 <!-- Player phone view -->
 <div id="phone" hidden>
-  <div class="ph-head"><div class="ph-title">Malam di Lembayung</div><div class="ph-badge" id="phPhase">Gabung</div></div>
+  <div class="ph-head"><div class="ph-title">Malam di Lembayung</div><div class="ph-badge"><span id="phMe"></span> <span id="phPhase">Gabung</span></div></div>
+  <div class="ph-netbar" id="phNetBar" hidden></div>
   <div class="ph-card" id="phJoin">
     <h3>Masuk permainan</h3>
-    <label class="f" for="phPin">PIN dari layar moderator<input id="phPin" inputmode="numeric" maxlength="6" autocomplete="off"></label>
+    <p class="netnote" style="margin:0">PIN tampil besar di layar proyektor moderator.</p>
+    <label class="f" for="phPin">PIN<input id="phPin" inputmode="numeric" maxlength="6" autocomplete="off"></label>
     <label class="f" for="phNick">Nama panggilan<input id="phNick" maxlength="20" autocomplete="off"></label>
     <div class="warn" id="phWarn"></div>
     <button class="btn primary" id="phGo">Gabung</button>
+    <button class="btn sm" id="phTest" type="button">Tes bunyi dan getar</button>
+    <p class="netnote" id="phTestR" style="margin:0">Nyalakan volume HP. Saat giliranmu, HP berbunyi, bergetar, dan layarnya berkedip.</p>
   </div>
   <div id="phMain" hidden>
-    <div class="ph-card" id="phWait"><h3>Siap!</h3><p id="phWaitT" style="margin:0"></p></div>
-    <div class="ph-card ph-role" id="phRole" role="button" tabindex="0"><canvas id="phSprite"></canvas><div style="min-width:0"><div class="rn" id="phRoleName"></div><div class="netnote" id="phRoleDesc"></div></div></div>
-    <div class="ph-card ph-dead" id="phDead"><h3>Kamu sudah mati</h3><p style="margin:0">Tetap diam dan jangan bocorkan apa pun sampai permainan selesai.</p></div>
-    <div class="ph-sleep" id="phSleep"><div class="moonsig"></div><h3 style="font:400 30px var(--display);margin:0;color:var(--moon)">Pejamkan mata</h3><p style="margin:0">Letakkan HP-mu. HP bergetar kalau giliranmu tiba.</p></div>
+    <div class="ph-stage"><canvas id="phScene" width="160" height="90"></canvas><p class="ph-narr" id="phNarr"></p></div>
+    <div class="ph-status" id="phStatus"><div class="ph-st-big" id="phStBig"></div><div class="ph-st-small" id="phStSmall"></div></div>
     <div class="ph-card" id="phAct"><h3 id="phActT"></h3><div id="phTargets"></div><p class="netnote" id="phActS" style="margin:0"></p></div>
-    <div class="ph-card" id="phTimerBox"><div class="eyebrow">Waktu diskusi</div><div class="ph-timer" id="phTimer">0:00</div></div>
-    <div class="ph-card" id="phNarrBox"><div class="eyebrow">Narator</div><p id="phNarr"></p></div>
+    <div class="ph-card" id="phTimerBox"><div class="eyebrow">Sisa waktu diskusi</div><div class="ph-timer" id="phTimer">0:00</div></div>
+    <div class="card ph-rolecard" id="phCard" role="button" tabindex="0" aria-label="Kartu peranmu">
+      <div class="in">
+        <div class="face back"><div class="moonsig"></div><div class="who" id="phWho"></div><div class="team">Ketuk untuk melihat peranmu</div></div>
+        <div class="face front" id="phFront"><canvas id="phSprite"></canvas><div class="rn" id="phRoleName"></div><div class="team" id="phTeam"></div><div class="ds" id="phRoleDesc"></div></div>
+      </div>
+    </div>
     <div class="ph-card" id="phSeen"><div class="eyebrow">Catatan bola kristal</div><div id="phSeenL"></div></div>
-    <div class="ph-card" id="phEnd"><h3 id="phEndT"></h3><p id="phEndS" style="margin:0"></p><div class="tw"><table class="mod" id="phEndTable"></table></div></div>
+    <div class="ph-card" id="phEnd"><h3 id="phEndT"></h3><div class="tw"><table class="mod" id="phEndTable"></table></div></div>
   </div>
+  <div id="phOverlay" hidden></div>
+  <div id="phTap" hidden><div class="moonsig"></div><b>Ketuk layar untuk lanjut</b><span>Supaya HP bisa berbunyi dan bergetar saat giliranmu.</span></div>
 </div>
 
 <!-- Modals -->
@@ -801,14 +848,15 @@ let typeTimer=null,timerInt=null;
 function show(id){['#sTitle','#sSetup','#sDeal','#sEnd','#sLobby'].forEach(s=>$(s).hidden=(s!==id))}
 function setPhase(t){$('#phase').textContent=t}
 function updateHud(){const a=G.players.filter(p=>p.alive).length;$('#alive').textContent=`${a} dari ${G.players.length} warga masih hidup`+(NET.on?` · PIN ${NET.pin}`:'')}
-function narrate(text,opt={}){G.narrText=text;pushState();return waitable(done=>{
+const modHint=t=>{const e=$('#modHint');if(e)e.textContent=t?'Tugas moderator: '+t:''};
+function narrate(text,opt={}){G.narrText=text;pushState();modHint('bacakan teks narator dengan suara keras, lalu tekan Lanjut atau Spasi.');return waitable(done=>{
   const box=$('#narr'),el=$('#narrText'),btn=$('#narrNext');box.hidden=false;btn.hidden=false;btn.textContent=opt.btn||'Lanjut';el.textContent='';
   let i=0,full=false;clearInterval(typeTimer);
   typeTimer=setInterval(()=>{i+=2;el.textContent=text.slice(0,i);if(i%6===0)typeBlip();if(i>=text.length){clearInterval(typeTimer);full=true}},26);
   speak(text);
   btn.onclick=()=>{blip();if(!full){clearInterval(typeTimer);el.textContent=text;full=true;return}btn.onclick=null;done()};
 })}
-function pickPlayer({title,sub='',filter,color='#e0483b',confirm='Pilih',skip=null,step=null,eligible=null,info=null}){return waitable(done=>{
+function pickPlayer({title,sub='',filter,color='#e0483b',confirm='Pilih',skip=null,step=null,eligible=null,info=null}){return waitable(done=>{modHint(NET.on&&step?'tunggu pilihan dari HP (nama tertandai otomatis), atau klik nama yang ditunjuk. Lalu tekan tombol berwarna.':'lihat siapa yang ditunjuk, klik namanya, lalu tekan tombol berwarna.');
   const pane=$('#pick');pane.hidden=false;pane.style.setProperty('--pc',color);$('#pickTitle').textContent=title;$('#pickSub').textContent=sub;
   $('#narrNext').hidden=true;const grid=$('#pickGrid'),foot=$('#pickFoot');grid.innerHTML='';foot.innerHTML='';
   const cand=G.players.filter(filter);let sel=null,manual=false;
@@ -830,7 +878,7 @@ function pickPlayer({title,sub='',filter,color='#e0483b',confirm='Pilih',skip=nu
   if(skip){const sb=document.createElement('button');sb.className='btn';sb.textContent=skip;sb.onclick=()=>{blip();finish(null)};foot.appendChild(sb)}
   ok.onclick=()=>{blip();finish(sel)};foot.appendChild(ok);
 })}
-function votePhase(){return waitable(done=>{
+function votePhase(){return waitable(done=>{modHint('pemain memilih di HP. Suara angkat tangan ditambah dengan klik nama. Tekan "Hukum suara terbanyak" bila semua sudah memilih.');
   const pane=$('#pick');pane.hidden=false;pane.style.setProperty('--pc','#ffb347');$('#pickTitle').textContent='Hitung suara';
   $('#pickSub').textContent=NET.on?'Suara dari HP masuk otomatis. Suara angkat tangan bisa ditambah dengan klik nama.':'Klik nama untuk menambah satu suara. Tombol minus mengurangi. Klik tokoh di desa juga bisa.';
   $('#narrNext').hidden=true;const grid=$('#pickGrid'),foot=$('#pickFoot');grid.innerHTML='';foot.innerHTML='';
@@ -852,7 +900,7 @@ function votePhase(){return waitable(done=>{
   go.onclick=()=>{const max=Math.max(0,...alive.map(p=>p.votes));if(!max){finish(null);return}const top=alive.filter(p=>p.votes===max);finish(top.length>1?'tie':top[0])};
   foot.append(no,go);
 })}
-function discussion(sec){return waitable(done=>{
+function discussion(sec){return waitable(done=>{modHint('biarkan pemain berdebat. Tekan "Mulai voting" kalau diskusi sudah cukup.');
   const box=$('#timer'),el=$('#timerT');box.hidden=false;box.classList.remove('urgent');let remain=sec,paused=false,lastS=-1;
   const fmt=s=>`${Math.floor(s/60)}:${String(Math.max(0,Math.ceil(s%60))).padStart(2,'0')}`;el.textContent=fmt(remain);
   const sync=()=>{G.timer={end:Date.now()+Math.max(0,remain)*1000,paused,remain:Math.max(0,remain)};pushState()};sync();
@@ -864,7 +912,7 @@ function discussion(sec){return waitable(done=>{
   $('#tPause').onclick=()=>{paused=!paused;$('#tPause').textContent=paused?'Lanjutkan':'Jeda';blip();sync()};
   $('#tAdd').onclick=()=>{remain+=30;blip();sync()};$('#tSkip').onclick=()=>{blip();end()};
 })}
-function bigReveal({role,title,sub,color}){return waitable(done=>{
+function bigReveal({role,title,sub,color}){return waitable(done=>{modHint('tunjukkan layar ini ke pemain, lalu tekan Lanjut.');
   const r=$('#reveal');r.hidden=false;r.innerHTML='';
   if(role){const cv=document.createElement('canvas');drawSprite(cv,role);r.appendChild(cv)}
   const b=document.createElement('div');b.className='big';b.style.color=color;b.textContent=title;r.appendChild(b);
@@ -1033,7 +1081,7 @@ function joinInfo(){const base=location.href.split(/[?#]/)[0].replace(/index\.ht
 function renderLobby(){if(!NET.on)return;const ps=onlinePeers();const list=$('#lobbyList');list.innerHTML='';
   ps.forEach(p=>{const b=document.createElement('button');b.className='jn';b.textContent=p.nick;b.title='Keluarkan';
     b.onclick=()=>{NET.ban.add(p.id);blip();renderLobby()};list.appendChild(b)});
-  $('#lobbyCount').textContent=`${ps.length} pemain bergabung`;
+  $('#lobbyCount').textContent=`${ps.length} pemain bergabung`;$('#lobbyNext').textContent=`Lanjut: atur peran (${ps.length} pemain)`;
   if(ps.length>NET.lastCount)tone('triangle',880,1320,.15,.08);NET.lastCount=ps.length;
   if(!$('#sSetup').hidden){$('#onlineInfo').textContent=`${ps.length} pemain online dari lobi (PIN ${NET.pin}). Tambahkan di bawah hanya pemain yang tidak memakai HP.`;validate()}}
 async function openLobby(){au();blip();show('#sLobby');
@@ -1047,10 +1095,12 @@ async function openLobby(){au();blip();show('#sLobby');
   $('#lobbyPin').textContent=NET.pin;$('#lobbyNet').textContent='Tersambung. Pemain bisa bergabung sekarang.';pushState();renderLobby()}
 
 /* ================= PHONE (player view) ================= */
-const PH={id:null,keys:null,pub:null,hkey:null,hpk:'',st:null,role:null,roleRaw:null,sel:null,show:false,joined:false,pin:null,nick:'',base:'',lastKey:null,seenSprite:null,client:null,ping:0};
+const PH={id:null,keys:null,pub:null,hkey:null,hpk:'',st:null,role:null,roleRaw:null,sel:null,joined:false,pin:null,nick:'',base:'',lastKey:null,seenSprite:null,client:null,ping:0,
+  actx:null,wake:null,prevAlive:null,prevPhase:null,prevGid:null,prevSeen:0,prevNarr:'',typeT:0,queue:[],ovT:0,remindAt:0,flipT:0,endShown:null};
 const PHASE_N={lobby:'Lobi',deal:'Persiapan',night:'Malam',day:'Siang',end:'Selesai'};
-const STEP_T={wolf:'Pilih mangsa malam ini',doc:'Siapa yang kamu lindungi?',seer:'Siapa yang ingin kamu terawang?',heal:'Pakai ramuan penyembuh?',poison:'Tuang racun ke siapa?',cupid1:'Panah pertama: pilih kekasih pertama',cupid2:'Panah kedua: pilih kekasih kedua',vote:'Siapa yang kamu curigai?',hunter:'Tembakan terakhirmu'};
-const STEP_C={wolf:'#e0483b',doc:'#57d97a',seer:'#b46cff',heal:'#4fd1c5',poison:'#7d3fd1',cupid1:'#ff7ab6',cupid2:'#ff7ab6',vote:'#ffb347',hunter:'#ffb347'};
+const STEP_T={wolf:'Pilih mangsa malam ini',doc:'Siapa yang kamu lindungi?',seer:'Siapa yang ingin kamu terawang?',heal:'Pakai ramuan penyembuh?',poison:'Tuang racun ke siapa?',cupid1:'Pilih kekasih pertama',cupid2:'Pilih kekasih kedua',vote:'Siapa yang kamu curigai?',hunter:'Tembakan terakhirmu'};
+const STEP_C={wolf:'#e0483b',doc:'#57d97a',seer:'#b46cff',heal:'#4fd1c5',poison:'#9b5cff',cupid1:'#ff7ab6',cupid2:'#ff7ab6',vote:'#ffb347',hunter:'#ffb347'};
+const GHOST=["....XXXXXX....","..XXXXXXXXXX..",".XXXXXXXXXXXX.",".XXkkXXXXkkXX.","XXXkkXXXXkkXXX","XXXXXXXXXXXXXX","XXXXXkkkXXXXXX","XXXXXkkkXXXXXX","XXXXXXXXXXXXXX","XXXXXXXXXXXXXX","XX.XXX..XXX.XX","X...X....X...X"];
 const phWarn=t=>$('#phWarn').textContent=t;
 function phSaved(){try{return JSON.parse(localStorage.getItem('mdl-join')||'null')}catch(e){return null}}
 function phoneMode(){
@@ -1059,9 +1109,30 @@ function phoneMode(){
   $('#c').style.display='none';$('#labels').hidden=true;$('#phone').hidden=false;
   const q=new URLSearchParams(location.search),sv=phSaved(),qp=(q.get('pin')||'').replace(/\D/g,'');
   $('#phPin').value=qp||(sv&&sv.pin)||'';$('#phNick').value=(sv&&sv.nick)||'';
-  if(sv&&sv.nick&&sv.pin&&(!qp||qp===sv.pin))phConnect(sv.pin,sv.nick);
-  setInterval(phTimer,250);
+  if(sv&&sv.nick&&sv.pin&&(!qp||qp===sv.pin)){phConnect(sv.pin,sv.nick);if(!(navigator.userActivation&&navigator.userActivation.hasBeenActive))$('#phTap').hidden=false}
+  document.addEventListener('pointerdown',phUnlock);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)phWake()});
+  setInterval(phTick,250);requestAnimationFrame(phScene);
 }
+/* --- alerts: sound, vibration, screen wake --- */
+function phUnlock(){try{if(!PH.actx){const C=window.AudioContext||window.webkitAudioContext;if(C)PH.actx=new C()}if(PH.actx&&PH.actx.state!=='running')PH.actx.resume()}catch(e){}phWake();$('#phTap').hidden=true}
+async function phWake(){try{if('wakeLock' in navigator&&!document.hidden&&(!PH.wake||PH.wake.released))PH.wake=await navigator.wakeLock.request('screen')}catch(e){}}
+function phBeep(kind){const c=PH.actx;if(!c||c.state!=='running')return;
+  const seq={turn:[[660,0],[880,.14],[1175,.28],[1568,.42]],death:[[196,0],[147,.3]],soft:[[523,0],[659,.18]],win:[[523,0],[659,.2],[784,.4],[1046,.6]],remind:[[880,0],[880,.2]]}[kind]||[[520,0]];
+  seq.forEach(([f,d])=>{const o=c.createOscillator(),g=c.createGain();o.type=kind==='death'?'sawtooth':'square';o.frequency.value=f;const t=c.currentTime+d;
+    g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.18,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+.2);o.connect(g).connect(c.destination);o.start(t);o.stop(t+.22)})}
+function phBuzz(p){try{if(navigator.vibrate)navigator.vibrate(p)}catch(e){}}
+function drawPix(cv,rows,col){const w=Math.max(...rows.map(r=>r.length)),h=rows.length;cv.width=w;cv.height=h;const x=cv.getContext('2d');
+  rows.forEach((r,j)=>[...r].forEach((ch,i)=>{if(ch==='.')return;x.fillStyle=ch==='X'?col:'#0b0820';x.fillRect(i,j,1,1)}))}
+function phOverlay(o){PH.queue.push(o);if($('#phOverlay').hidden)phNextOverlay()}
+function phNextOverlay(){const ov=$('#phOverlay');clearTimeout(PH.ovT);const o=PH.queue.shift();if(!o){ov.hidden=true;return}
+  ov.innerHTML='';ov.className='ph-ov'+(o.kind?' '+o.kind:'');ov.style.setProperty('--oc',o.color||'#ffb347');
+  if(o.sprite||o.ghost){const cv=document.createElement('canvas');if(o.sprite)drawSprite(cv,o.sprite);else drawPix(cv,GHOST,'#dce8ff');ov.appendChild(cv)}
+  const t=document.createElement('div');t.className='ov-t';t.textContent=o.title;ov.appendChild(t);
+  if(o.sub){const s=document.createElement('div');s.className='ov-s';s.textContent=o.sub;ov.appendChild(s)}
+  const h=document.createElement('div');h.className='ov-h';h.textContent='Ketuk untuk menutup';ov.appendChild(h);
+  ov.hidden=false;ov.onclick=()=>phNextOverlay();PH.ovT=setTimeout(phNextOverlay,o.ms||3500)}
+/* --- connection --- */
 async function phConnect(pin,nick){
   const idx=+pin[0]-1;
   if(!/^\d{6}$/.test(pin)||!(idx>=0&&idx<BROKERS.length)){phWarn('PIN harus 6 angka, sesuai yang tampil di layar moderator.');return}
@@ -1075,15 +1146,16 @@ async function phConnect(pin,nick){
       sv={pin,id:PH.id,priv:await CR.expPriv(k),pub:PH.pub}}
     sv.nick=nick;try{localStorage.setItem('mdl-join',JSON.stringify(sv))}catch(e){}
     const c=await connectBroker(idx,10000);
-    Object.assign(PH,{client:c,pin,nick,base:'mdlwolf/v1/'+pin,st:null,role:null,roleRaw:null,hkey:null,hpk:'',joined:false});
+    Object.assign(PH,{client:c,pin,nick,base:'mdlwolf/v1/'+pin,st:null,role:null,roleRaw:null,hkey:null,hpk:'',joined:false,prevAlive:null,prevPhase:null,prevSeen:0});
     c.subscribe([PH.base+'/h',PH.base+'/u/'+PH.id],{qos:1});
     c.on('message',(t,b)=>{if(PH.client===c)phMsg(t,b.toString())});
-    c.on('offline',()=>{if(PH.client===c)phWarn('Koneksi terputus. Menyambung ulang…')});
-    c.on('connect',()=>{if(PH.client===c){phWarn('');phPing()}});
+    c.on('offline',()=>{if(PH.client===c)phNet('Koneksi terputus. Menyambung ulang…')});
+    c.on('connect',()=>{if(PH.client===c){phNet('');phPing()}});
     phPing();clearInterval(PH.ping);PH.ping=setInterval(phPing,10000);
     setTimeout(()=>{if(PH.client===c&&!PH.st)phWarn('Permainan dengan PIN ini tidak ditemukan. Periksa lagi PIN di layar moderator.')},7000);
   }catch(e){phWarn('Tidak bisa terhubung ke server. Cek internet lalu coba lagi.')}
   $('#phGo').disabled=false}
+function phNet(t){$('#phNetBar').textContent=t;$('#phNetBar').hidden=!t}
 function phPing(){if(PH.client&&PH.pub)PH.client.publish(PH.base+'/p',JSON.stringify({t:'join',id:PH.id,nick:PH.nick,pk:PH.pub}),{qos:1})}
 async function phMsg(topic,body){let m;try{m=JSON.parse(body)}catch(e){return}
   if(topic===PH.base+'/h'){if(!m||m.pin!==PH.pin)return;PH.st=m;
@@ -1094,52 +1166,131 @@ async function phMsg(topic,body){let m;try{m=JSON.parse(body)}catch(e){return}
   else{PH.roleRaw=m;await phDecRole();renderPhone()}}
 async function phDecRole(){if(!PH.hkey||!PH.roleRaw)return;try{PH.role=await CR.dec(PH.hkey,PH.roleRaw)}catch(e){}}
 async function phSend(key,t){if(!PH.client||!PH.hkey)return;try{const e=await CR.enc(PH.hkey,{key,t});PH.client.publish(PH.base+'/p',JSON.stringify(Object.assign({t:'act',id:PH.id},e)),{qos:1})}catch(e){}}
-$('#phGo').onclick=()=>{const pin=$('#phPin').value.replace(/\D/g,''),nick=$('#phNick').value.trim().slice(0,20);
+$('#phGo').onclick=()=>{phUnlock();phBuzz(40);const pin=$('#phPin').value.replace(/\D/g,''),nick=$('#phNick').value.trim().slice(0,20);
   if(!nick){phWarn('Isi nama panggilanmu dulu.');return}phConnect(pin,nick)};
-$('#phRole').onclick=()=>{PH.show=!PH.show;renderPhone()};
-$('#phRole').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();PH.show=!PH.show;renderPhone()}};
-function phTimer(){const st=PH.st;if(!st||!st.timer||$('#phTimerBox').hidden)return;const t=st.timer;
-  const rem=t.paused?t.remain:Math.max(0,(t.end-Date.now())/1000);const sec=Math.ceil(rem);$('#phTimer').textContent=`${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`}
+$('#phTap').onclick=()=>{phUnlock();phBuzz(60);phBeep('soft')};
+$('#phTest').onclick=()=>{phUnlock();phBuzz([200,100,200]);phBeep('turn');$('#phTestR').textContent=navigator.vibrate?'Kalau HP bergetar dan berbunyi, alarm siap.':'HP ini tidak bisa bergetar dari browser (misalnya iPhone). Kamu akan diberi tanda lewat bunyi dan layar berkedip.'};
+function phFlip(){const c=$('#phCard');c.classList.toggle('flip');clearTimeout(PH.flipT);if(c.classList.contains('flip'))PH.flipT=setTimeout(()=>c.classList.remove('flip'),7000)}
+$('#phCard').onclick=phFlip;
+$('#phCard').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();phFlip()}};
+/* --- events derived from state changes --- */
+function phEvents(st,inGame){
+  const r=PH.role;const myPid=inGame?r.pid:-1;
+  if(st.gid!==PH.prevGid){PH.prevAlive=null;PH.prevSeen=0}
+  if(PH.prevPhase!==st.phase&&PH.prevPhase!==null){
+    if(st.phase==='night'){SC.bloodT=1;phOverlay({title:`Malam ${st.day}`,sub:'Pejamkan mata dan taruh HP-mu. HP akan berbunyi kalau giliranmu.',color:'#b46cff',kind:'phase'});phBeep('soft')}
+    else if(st.phase==='day'){phOverlay({title:`Pagi hari ${st.day}`,sub:'Buka mata dan dengarkan narator.',color:'#ffb347',kind:'phase'});phBeep('soft')}
+    else if(st.phase==='deal'&&inGame){phOverlay({title:'Kartu dibagikan',sub:'Ketuk kartumu untuk melihat peran. Jangan tunjukkan ke siapa pun.',color:'#ffb347',kind:'phase'});phBuzz(150);phBeep('soft')}}
+  if(PH.prevAlive&&st.players){st.players.forEach((p,i)=>{if(PH.prevAlive[i]&&!p.a){
+    const me=i===myPid,rr=p.r?ROLES[p.r]:null;SC.ghosts.push({x:20+((i*37)%120),y:70,t:0});if(st.phase==='day'&&!st.step)SC.bolt=1;else SC.flash=1;
+    phOverlay({title:me?'Kamu tewas':`${p.n} tewas`,sub:me?'Tetap diam sampai permainan selesai, ya.':(rr?`Ternyata ia ${rr.name}.`:'Perannya masih rahasia.'),ghost:true,color:'#e0483b',kind:'death',ms:4000});
+    phBuzz(me?[400,100,400]:[250]);phBeep('death')}})}
+  if(inGame&&r.role==='peramal'&&r.seen&&r.seen.length>PH.prevSeen){const x=r.seen[r.seen.length-1];
+    if(PH.prevSeen>0||PH.prevPhase!==null)phOverlay({title:x.w?'SERIGALA!':'Bukan serigala',sub:x.w?`Bola kristal menyala merah. ${x.n} adalah serigala.`:`Bola kristal tenang. ${x.n} bukan serigala.`,sprite:x.w?'serigala':'peramal',color:x.w?'#e0483b':'#57d97a',kind:'reveal',ms:5000});
+    phBuzz([100,50,100]);PH.prevSeen=r.seen.length}
+  if(st.phase==='end'&&PH.endShown!==st.gid&&inGame){PH.endShown=st.gid;const w=st.winner,R=ROLES[r.role]||ROLES.warga;
+    const win=w==='jester'?r.role==='badut':w==='wolf'?R.team==='wolf':R.team==='village';
+    phOverlay({title:win?'Kamu menang!':'Kamu kalah',sub:(END[w]||END.village).title,sprite:(END[w]||END.village).role,color:win?'#57d97a':'#e0483b',kind:'end',ms:6000});phBeep(win?'win':'death');phBuzz(win?[100,60,100,60,300]:[500])}
+  PH.prevAlive=st.players?st.players.map(p=>p.a):null;PH.prevPhase=st.phase;PH.prevGid=st.gid}
+function phType(text){if(text===PH.prevNarr)return;PH.prevNarr=text;clearInterval(PH.typeT);const el=$('#phNarr');let i=0;el.textContent='';
+  PH.typeT=setInterval(()=>{i+=2;el.textContent=text.slice(0,i);if(i>=text.length)clearInterval(PH.typeT)},28)}
+function phStatus(big,small,color){$('#phStBig').textContent=big;$('#phStSmall').textContent=small||'';$('#phStatus').style.setProperty('--sc',color||'#ffb347')}
+function phTick(){const st=PH.st;
+  if(st&&st.timer&&!$('#phTimerBox').hidden){const t=st.timer;const rem=t.paused?t.remain:Math.max(0,(t.end-Date.now())/1000);const sec=Math.ceil(rem);
+    $('#phTimer').textContent=`${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`;$('#phTimerBox').classList.toggle('urgent',sec<=10)}
+  if(PH.need&&Date.now()>PH.remindAt){PH.remindAt=Date.now()+9000;phBuzz([150,80,150]);phBeep('remind')}}
+/* --- render --- */
 function renderPhone(){
   const st=PH.st;
   $('#phJoin').hidden=PH.joined;$('#phMain').hidden=!PH.joined;
-  if(!PH.joined||!st){$('#phPhase').textContent='Gabung';$('#phone').classList.remove('dark');return}
+  if(!PH.joined||!st){$('#phPhase').textContent='Gabung';$('#phone').classList.remove('dark');PH.need=false;return}
   const inGame=!!(PH.role&&PH.role.gid&&PH.role.gid===st.gid&&st.phase!=='lobby');
+  phEvents(st,inGame);
   $('#phPhase').textContent=(PHASE_N[st.phase]||'')+((st.phase==='night'||st.phase==='day')&&st.day?' '+st.day:'');
-  ['#phRole','#phDead','#phSleep','#phAct','#phTimerBox','#phNarrBox','#phSeen','#phEnd'].forEach(s=>$(s).hidden=true);
-  $('#phWait').hidden=inGame;
-  $('#phWaitT').textContent=st.phase==='lobby'?`Kamu masuk sebagai ${PH.nick}. Cari namamu di layar, lalu tunggu moderator memulai.`:`Permainan sedang berjalan tanpa namamu. Kamu ikut di ronde berikutnya, ${PH.nick}.`;
-  $('#phone').classList.toggle('dark',inGame&&st.phase==='night');
-  if(!inGame)return;
+  $('#phMe').textContent=PH.nick;
+  ['#phAct','#phTimerBox','#phCard','#phSeen','#phEnd'].forEach(s=>$(s).hidden=true);
+  phType(st.narr||(st.phase==='lobby'?'Di balik pegunungan berkabut berdiri Desa Lembayung. Malam ini, sesuatu bersembunyi di antara warganya…':''));
+  $('#phone').classList.remove('dark');PH.need=false;
+  if(!inGame){
+    if(st.phase==='lobby')phStatus('Kamu sudah masuk',`Namamu "${PH.nick}" muncul di layar proyektor. Tunggu moderator memulai.`,'#57d97a');
+    else phStatus('Tunggu ronde berikutnya','Permainan ini sudah berjalan tanpa namamu. Kamu ikut saat moderator mengulang permainan.','#a9a2c4');
+    return}
   const r=PH.role,R=ROLES[r.role]||ROLES.warga,me=(st.players||[])[r.pid]||{a:true},alive=me.a!==false;
-  $('#phRole').hidden=false;
-  if(PH.show){if(PH.seenSprite!==r.role){drawSprite($('#phSprite'),r.role);PH.seenSprite=r.role}$('#phSprite').style.visibility='visible';
-    $('#phRoleName').textContent=R.name;$('#phRoleName').style.color=R.color;
-    $('#phRoleDesc').textContent=R.desc+(r.pack&&r.pack.length?` Kawananmu: ${r.pack.join(', ')}.`:'')+(r.lover?` Kekasihmu: ${r.lover}. Jika ia mati, kamu ikut mati.`:'')+' Ketuk untuk menyembunyikan.'}
-  else{$('#phSprite').style.visibility='hidden';$('#phRoleName').textContent='Ketuk untuk lihat peranmu';$('#phRoleName').style.color='';$('#phRoleDesc').textContent='Tutupi layar dari teman di sebelahmu.'}
+  // role card
+  $('#phCard').hidden=false;$('#phWho').textContent=PH.nick;
+  if(PH.seenSprite!==r.role+r.gid){drawSprite($('#phSprite'),r.role);PH.seenSprite=r.role+r.gid;$('#phCard').classList.remove('flip')}
+  $('#phFront').style.setProperty('--rc',R.color);$('#phRoleName').textContent=R.name;$('#phTeam').textContent=R.teamName;
+  $('#phRoleDesc').textContent=R.desc+(r.pack&&r.pack.length?` Kawananmu: ${r.pack.join(', ')}.`:'')+(r.lover?` Kekasihmu: ${r.lover}.`:'');
   if(st.phase==='end'){const w=st.winner;const win=w==='jester'?r.role==='badut':w==='wolf'?R.team==='wolf':R.team==='village';
-    $('#phEnd').hidden=false;$('#phEndT').textContent=(END[w]||END.village).title;$('#phEndS').textContent=win?'Pihakmu menang. Selamat!':'Pihakmu kalah kali ini.';
+    phStatus(win?'Pihakmu menang!':'Pihakmu kalah',(END[w]||END.village).title+' Lihat peran semua pemain di bawah.',win?'#57d97a':'#e0483b');
+    $('#phEnd').hidden=false;$('#phEndT').textContent='Peran semua pemain';
     $('#phEndTable').innerHTML='<tr><th>Nama</th><th>Peran</th></tr>'+(st.players||[]).map(p=>{const rr=ROLES[p.r]||ROLES.warga;return`<tr><td>${esc(p.n)}</td><td style="color:${rr.color}">${rr.name}</td></tr>`}).join('');
     return}
-  if(!alive)$('#phDead').hidden=false;
   const s=st.step;let elig=false;
   if(s){elig=(s.k==='vote'&&alive)||(s.k==='hunter'&&s.who===r.pid)||(alive&&(STEP_ROLES[s.k]||[]).includes(r.role))}
   if(elig){$('#phAct').hidden=false;$('#phAct').style.setProperty('--pc',STEP_C[s.k]||'#e0483b');
-    if(PH.lastKey!==s.key){PH.lastKey=s.key;try{navigator.vibrate&&navigator.vibrate([120,60,120])}catch(e){}}
+    const mine=PH.sel&&PH.sel.key===s.key?PH.sel.t:null;
+    if(PH.lastKey!==s.key){PH.lastKey=s.key;PH.remindAt=Date.now()+9000;
+      phOverlay({title:'Giliranmu!',sub:STEP_T[s.k]||'Pilih satu nama.',color:STEP_C[s.k],kind:'turn',ms:2600});phBuzz([200,100,200,100,500]);phBeep('turn')}
+    PH.need=mine===null;
     $('#phActT').textContent=STEP_T[s.k]||'Pilih';
-    const box=$('#phTargets');box.innerHTML='';const mine=PH.sel&&PH.sel.key===s.key?PH.sel.t:null;
-    const opts=(s.targets||[]).map(id=>({id,label:(st.players[id]||{}).n||'?'}));if(s.skip)opts.push({id:-1,label:s.skip});
-    opts.forEach(o=>{const b=document.createElement('button');b.textContent=o.label;if(mine===o.id)b.classList.add('on');
-      b.onclick=()=>{PH.sel={key:s.key,t:o.id};phSend(s.key,o.id);renderPhone()};box.appendChild(b)});
+    const box=$('#phTargets');box.innerHTML='';
+    const opts=(s.targets||[]).map(id=>({id,label:(st.players[id]||{}).n||'?'}));if(s.skip)opts.push({id:-1,label:s.skip,skip:true});
+    opts.forEach(o=>{const b=document.createElement('button');b.textContent=o.label;if(o.skip)b.className='skip';if(mine===o.id)b.classList.add('on');
+      b.onclick=()=>{PH.sel={key:s.key,t:o.id};PH.need=false;phSend(s.key,o.id);phBuzz(40);renderPhone()};box.appendChild(b)});
     const chosen=opts.find(o=>o.id===mine);
-    $('#phActS').textContent=(s.info?s.info+' ':'')+(chosen?`Pilihanmu terkirim: ${chosen.label}. Moderator yang mengesahkan.`:'Ketuk satu pilihan.')}
-  else if(st.phase==='night'&&alive){$('#phSleep').hidden=false}
-  if(st.timer)$('#phTimerBox').hidden=false;
-  if(st.narr&&$('#phSleep').hidden){$('#phNarrBox').hidden=false;$('#phNarr').textContent=st.narr}
-  if(r.role==='peramal'&&r.seen&&r.seen.length){$('#phSeen').hidden=false;const l=$('#phSeenL');l.innerHTML='';
+    $('#phActS').textContent=(s.info?s.info+' ':'')+(chosen?`Terkirim: ${chosen.label}. Kamu masih bisa mengganti pilihan.`:'Ketuk satu pilihan. Tidak ada yang melihat pilihanmu.');
+    phStatus('Giliranmu!',s.k==='vote'?'Pilih satu nama yang paling kamu curigai.':'Buka mata diam-diam, pilih di bawah, lalu tutup mata lagi.',STEP_C[s.k]);
+    if(st.phase==='night')$('#phCard').hidden=true}
+  else if(!alive)phStatus('Kamu sudah tewas','Tetap diam dan jangan beri petunjuk sampai permainan selesai.','#e0483b');
+  else if(st.phase==='night'){$('#phone').classList.add('dark');$('#phCard').hidden=true;phStatus('Pejamkan mata','Taruh HP-mu. HP akan berbunyi dan bergetar kalau giliranmu tiba.','#b46cff')}
+  else if(st.phase==='deal')phStatus('Lihat peranmu','Ketuk kartu di bawah. Rahasiakan dari teman di sebelahmu.','#ffb347');
+  else if(st.timer)phStatus('Waktu diskusi','Siapa yang mencurigakan? Bicaralah dan perhatikan teman-temanmu.','#ffb347');
+  else phStatus('Dengarkan narator','Lihat layar proyektor dan ikuti ceritanya.','#ffb347');
+  if(st.timer){$('#phTimerBox').hidden=false}
+  if(r.role==='peramal'&&r.seen&&r.seen.length&&$('#phone').classList.contains('dark')===false){$('#phSeen').hidden=false;const l=$('#phSeenL');l.innerHTML='';
     r.seen.forEach(x=>{const d=document.createElement('div');d.className='seen-row';const a=document.createElement('span');a.textContent=`Malam ${x.d}: ${x.n}`;
       const b=document.createElement('b');b.textContent=x.w?'SERIGALA':'bukan serigala';b.style.color=x.w?'#e0483b':'#57d97a';d.append(a,b);l.appendChild(d)})}
-  phTimer();
+  phTick();
+}
+/* --- animated pixel village on the phone (mirrors the projector's sky and events) --- */
+const SC={sky:.45,blood:0,bloodT:0,bolt:0,flash:0,ghosts:[],
+  stars:Array.from({length:45},()=>[Math.random()*160,Math.random()*42,Math.random()*6]),
+  flies:Array.from({length:10},()=>[Math.random()*160,48+Math.random()*24,Math.random()*6]),
+  houses:[[6,50,20,13,'#b89f7a','#7a2f2f'],[30,54,14,10,'#d9c7a3','#6f4a2b'],[112,49,20,14,'#c9b48a','#4c3a5a'],[137,53,17,11,'#d6b38d','#8c3b2a'],[57,56,11,8,'#e2d4b7','#9c5a2c'],[94,56,11,8,'#b89f7a','#6f4a2b']]};
+const hx=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+function mix3(cols,t){const a=t<.5?cols[0]:cols[1],b=t<.5?cols[1]:cols[2],k=t<.5?t*2:(t-.5)*2;const A=hx(a),B=hx(b);return`rgb(${A.map((v,i)=>Math.round(v+(B[i]-v)*k)).join(',')})`}
+function phScene(ts){
+  if(!G.phone)return;requestAnimationFrame(phScene);
+  const cv=$('#phScene');if($('#phMain').hidden)return;const x=cv.getContext('2d');const t=ts/1000;const st=PH.st||{};
+  const target=st.phase==='night'?0:st.phase==='day'?(st.step&&st.step.k==='vote'?.62:1):st.phase==='end'?(st.winner==='wolf'?0:1):.45;
+  SC.sky+=(target-SC.sky)*.02;SC.bloodT=st.phase==='night'||st.winner==='wolf'?1:0;SC.blood+=(SC.bloodT-SC.blood)*.03;
+  const s=SC.sky,night=1-Math.min(1,s*1.4);
+  const g=x.createLinearGradient(0,0,0,90);g.addColorStop(0,mix3(['#0b0f2a','#c46a4a','#7fbde6'],s));g.addColorStop(1,mix3(['#2a1640','#ffb37a','#d8eef8'],s));
+  x.fillStyle=g;x.fillRect(0,0,160,90);
+  if(SC.blood>.01){x.fillStyle=`rgba(90,10,20,${SC.blood*.35*night})`;x.fillRect(0,0,160,90)}
+  SC.stars.forEach(([sx,sy,p])=>{const a=night*(.5+.5*Math.sin(t*2+p));if(a<.05)return;x.fillStyle=`rgba(255,255,240,${a})`;x.fillRect(sx|0,sy|0,1,1)});
+  if(night>.05){const mc=SC.blood>.5?'#ff5a3a':'#f1ead2';x.globalAlpha=night*.25;x.fillStyle=mc;x.beginPath();x.arc(128,16,12,0,7);x.fill();x.globalAlpha=night;x.beginPath();x.arc(128,16,7,0,7);x.fill();x.globalAlpha=1}
+  if(s>.3){const sy=62-s*46;x.globalAlpha=Math.min(1,(s-.3)*3);x.fillStyle='#fff1a8';x.beginPath();x.arc(30,sy,6,0,7);x.fill();x.globalAlpha=1}
+  x.fillStyle=mix3(['#14261c','#3a3a2a','#3f7a45'],s);x.beginPath();x.moveTo(0,60);for(let i=0;i<=160;i+=8)x.lineTo(i,56+Math.sin(i*.07)*4);x.lineTo(160,90);x.lineTo(0,90);x.fill();
+  x.fillStyle=mix3(['#1d1a24','#5b4433','#7a5a3a'],s);x.fillRect(0,70,160,20);
+  SC.houses.forEach(([hx_,hy,w,h,wall,roof])=>{const dim=.35+s*.65;x.fillStyle=wall;x.globalAlpha=dim;x.fillRect(hx_,hy,w,h);x.fillStyle=roof;x.beginPath();x.moveTo(hx_-2,hy);x.lineTo(hx_+w/2,hy-7);x.lineTo(hx_+w+2,hy);x.fill();x.globalAlpha=1;
+    x.fillStyle=night>.3?'#ffc861':'#3a2a1a';x.fillRect(hx_+w-6,hy+3,3,3);x.fillStyle='#2a1a10';x.fillRect(hx_+3,hy+h-6,3,6)});
+  // villagers around the fire
+  const ps=st.players&&st.players.length?st.players:Array.from({length:10},()=>({a:true}));const n=Math.min(ps.length,16);
+  for(let i=0;i<n;i++){const px=18+i*(124/Math.max(1,n-1)),py=74+(i%2)*3;const p=ps[i];
+    if(p.a){const bob=Math.abs(Math.sin(t*2+i))*1;x.fillStyle=SHIRTS[i%SHIRTS.length];x.fillRect(px|0,(py-4-bob)|0,3,4);x.fillStyle='#e0ac7e';x.fillRect(px|0,(py-6-bob)|0,3,2)}
+    else{x.fillStyle='#8b8a99';x.fillRect(px|0,py-4,3,4);x.fillRect((px-1)|0,py-3,5,1)}}
+  // campfire
+  const fl=Math.sin(t*12)*1.2;x.fillStyle='#5b3a1f';x.fillRect(76,82,9,2);
+  [['#ff4d1f',5,7],['#ff9d2e',3.5,5],['#ffe27a',2,3]].forEach(([c,w,h],k)=>{x.fillStyle=c;x.beginPath();x.moveTo(80.5-w,82);x.lineTo(80.5+Math.sin(t*9+k)*.8,82-h-fl);x.lineTo(80.5+w,82);x.fill()});
+  x.globalAlpha=.18+night*.25;x.fillStyle='#ff8a3a';x.beginPath();x.arc(80.5,79,14+fl,0,7);x.fill();x.globalAlpha=1;
+  if(night>.3){SC.flies.forEach(f=>{const fx=(f[0]+Math.sin(t*.7+f[2])*6)%160,fy=f[1]+Math.cos(t+f[2])*3;x.fillStyle=`rgba(216,255,122,${night*(.5+.5*Math.sin(t*3+f[2]))})`;x.fillRect(fx|0,fy|0,1,1)});
+    if(st.phase==='night'){[[12,63],[146,64],[100,61]].forEach(([ex,ey],k)=>{if(Math.sin(t*1.3+k*2)>-.85){x.fillStyle='#ff2020';x.fillRect(ex,ey,1,1);x.fillRect(ex+3,ey,1,1)}})}}
+  SC.ghosts=SC.ghosts.filter(gh=>{gh.t+=.012;if(gh.t>1)return false;x.globalAlpha=1-gh.t;x.fillStyle='#dce8ff';const gx=gh.x+Math.sin(gh.t*12)*2,gy=gh.y-gh.t*55;
+    x.fillRect(gx,gy,6,6);x.fillRect(gx-1,gy+2,8,4);x.fillStyle='#0b0820';x.fillRect(gx+1,gy+2,1,1);x.fillRect(gx+4,gy+2,1,1);x.globalAlpha=1;return true});
+  if(SC.bolt>0){x.fillStyle=`rgba(255,255,255,${SC.bolt*.6})`;x.fillRect(0,0,160,90);x.strokeStyle='#e8f0ff';x.beginPath();let bx=70+Math.random()*20;x.moveTo(bx,0);for(let y=8;y<=72;y+=8){bx+=(Math.random()-.5)*10;x.lineTo(bx,y)}x.stroke();SC.bolt-=.04}
+  if(SC.flash>0){x.fillStyle=`rgba(224,72,59,${SC.flash*.5})`;x.fillRect(0,0,160,90);SC.flash-=.03}
 }
 
 /* ================= WIRING ================= */
